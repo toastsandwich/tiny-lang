@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/toastsandwich/tinylang/ast"
 	"github.com/toastsandwich/tinylang/lexer"
 )
 
@@ -23,5 +24,30 @@ let z = x > y;
 		if tok.Type == lexer.EOF {
 			break
 		}
+	}
+
+	a := ast.NewAST(input)
+
+	va := &ast.Identifier{Value: "var_a"}
+	vb := &ast.Identifier{Value: "var_b"}
+
+	leta := &ast.LetStatement{
+		Identifier: va,
+		Value:      "1000",
+	}
+	letb := &ast.LetStatement{
+		Identifier: vb,
+		Value:      "100",
+	}
+	iF := &ast.IfStatement{
+		Condition: &ast.BinaryExpression{
+			Left:     va,
+			Right:    vb,
+			Operator: "==",
+		},
+	}
+	a.Root.AddToOutgoingNode(leta, letb, iF)
+	for _, n := range a.Root.OutgoingNodes {
+		fmt.Println(n.GenerateGo())
 	}
 }

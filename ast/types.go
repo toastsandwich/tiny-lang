@@ -23,15 +23,16 @@ type Expression interface {
 }
 
 func (*BinaryExpression) IsExpression() {}
+func (*Identifier) IsExpression()       {}
 func (*UnaryExpression) IsExpression()  {}
 
 type LetStatement struct {
-	Identifier string
+	Identifier *Identifier
 	Value      string
 }
 
 func (l *LetStatement) GenerateGo() string {
-	return fmt.Sprintf("%s := %s\n", l.Identifier, l.Value)
+	return fmt.Sprintf("%s := %s\n", l.Identifier.Value, l.Value)
 }
 
 type IfStatement struct {
@@ -68,4 +69,12 @@ type BinaryExpression struct {
 
 func (b *BinaryExpression) GenerateGo() string {
 	return fmt.Sprintf("%s %s %s", b.Left.GenerateGo(), b.Operator, b.Right.GenerateGo())
+}
+
+type Identifier struct {
+	Value string
+}
+
+func (i *Identifier) GenerateGo() string {
+	return fmt.Sprintf("%s", i.Value)
 }
